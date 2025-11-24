@@ -69,6 +69,27 @@ def get_list_current_cny_futures():
     return get_list_definite_futures("CR")
 
 
+def get_data_future(ticker):
+    """Получить данные указанного фьючерса
+
+        Args:
+            ticker (str): тикер фьючерса для получения данных
+
+        Returns:
+            (dict{'ticker': 'str', 'minstep': 'str', 'lasttradedate': 'str'}): формат возвращаемых данных
+    """
+    SECID = 0
+    MINSTEP = 6
+    LASTTRADEDATE = 7
+    data_ticker = {}
+
+    full_data_ticker = __query(f"engines/futures/markets/forts/securities/{ticker}", None)['securities']['data']
+    data_ticker['ticker'] = full_data_ticker[0][SECID]
+    data_ticker['minstep'] = str(full_data_ticker[0][MINSTEP])
+    data_ticker['lasttradedate'] = full_data_ticker[0][LASTTRADEDATE]
+    return data_ticker
+
+
 def __get_candles(market, ticker, start_date=None, finish_date=None, interval='1m'):
     """Получить данные свечей за указанный период из MOEX
 
