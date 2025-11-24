@@ -52,7 +52,7 @@ def get_list_definite_futures(prefix_ftrs):
     list_ftrs = []
     list_all_secid = get_list_all_name_futures()
     for secid in list_all_secid:
-        if secid.startswith(prefix_ftrs):
+        if secid.lower().startswith(prefix_ftrs.lower()):
             list_ftrs.append(secid)
     return list_ftrs
 
