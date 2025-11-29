@@ -1,5 +1,6 @@
 import requests
 from urllib import parse
+import time
 
 
 def __query(method, kwargs):
@@ -83,11 +84,23 @@ def get_data_future(ticker):
     LASTTRADEDATE = 7
     data_ticker = {}
 
-    full_data_ticker = __query(f"engines/futures/markets/forts/securities/{ticker}", None)['securities']['data']
-    data_ticker['ticker'] = full_data_ticker[0][SECID]
-    data_ticker['minstep'] = str(full_data_ticker[0][MINSTEP])
-    data_ticker['lasttradedate'] = full_data_ticker[0][LASTTRADEDATE]
-    return data_ticker
+    for i in range(5):
+        try:
+            full_data_ticker = __query(f"engines/futures/markets/forts/securities/{ticker}", None)['securities']['data']
+            break
+        except TypeError:
+            time.sleep(3)
+            continue
+    else:
+        return {}
+
+    try:
+        data_ticker['ticker'] = full_data_ticker[0][SECID]
+        data_ticker['minstep'] = str(full_data_ticker[0][MINSTEP])
+        data_ticker['lasttradedate'] = full_data_ticker[0][LASTTRADEDATE]
+        return data_ticker
+    except IndexError:
+        return {}
 
 
 def __get_candles(market, ticker, start_date=None, finish_date=None, interval='1m'):
